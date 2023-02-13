@@ -1,0 +1,107 @@
+﻿{
+  "languageTag": "en-US",
+  "fileDescription": "Strings for skymen_shell.",
+  "text": {
+    "plugins": {
+      "skymen_shell": {
+        "name": "Empty Shell",
+        "description": "An empty shell addon that can be given a texture",
+        "help-url": "https://www.construct.net",
+        "properties": {
+          "hotspot-x": {
+            "name": "Origin X",
+            "desc": "X Coordinate (0-1)"
+          },
+          "hotspot-y": {
+            "name": "Origin Y",
+            "desc": "Y Coordinate (0-1)"
+          }
+        },
+        "aceCategories": {
+          "general": "General"
+        },
+        "conditions": {
+          "has-source": {
+            "list-name": "Has source",
+            "display-text": "Has source",
+            "description": "Test if the object has a source object",
+            "params": {}
+          },
+          "keeps-sync": {
+            "list-name": "Keeps sync",
+            "display-text": "Keeps sync",
+            "description": "Test if the object keeps sync with the source object",
+            "params": {}
+          }
+        },
+        "actions": {
+          "set-source": {
+            "list-name": "Set Source",
+            "display-text": "Set the source to [i]{0}[/i] (keep sync: [i]{1}[/i], sync size: [i]{2}[/i], fallback: [i]{3}[/i], sync origin: [i]{4}[/i])",
+            "description": "Set the source object",
+            "params": {
+              "source": {
+                "name": "Source",
+                "desc": "The source object"
+              },
+              "keep-sync": {
+                "name": "Keep Sync",
+                "desc": "Keep the object synced to the source"
+              },
+              "sync-size": {
+                "name": "Sync Size",
+                "desc": "How to sync the size",
+                "items": {
+                  "no-sync": "No Sync",
+                  "sprite-size": "Sync with Sprite Size",
+                  "image-size": "Sync with Image Size"
+                }
+              },
+              "fallback": {
+                "name": "Fallback",
+                "desc": "If keeping sync, what to do if source is destroyed",
+                "items": {
+                  "item1": "Destroy with source",
+                  "item2": "Fallback on another instance or destroy",
+                  "item3": "Fallback on another instance or reset",
+                  "item4": "Reset image"
+                }
+              },
+              "sync-origin": {
+                "name": "Sync Origin",
+                "desc": "Wether to sync the origin"
+              }
+            }
+          },
+          "set-hotspot": {
+            "list-name": "Set Hotspot",
+            "display-text": "Set the hotspot to [i]{0}[/i], [i]{1}[/i]",
+            "description": "Set the hotspot",
+            "params": {
+              "hotspot-x": {
+                "name": "Hotspot X",
+                "desc": "The hotspot x coordinate (0-1)"
+              },
+              "hotspot-y": {
+                "name": "Hotspot Y",
+                "desc": "The hotspot y coordinate (0-1)"
+              }
+            }
+          }
+        },
+        "expressions": {
+          "hotspot-x": {
+            "description": "Get the hotspot x coordinate",
+            "translated-name": "HotspotX",
+            "params": {}
+          },
+          "hotspot-y": {
+            "description": "Get the hotspot y coordinate",
+            "translated-name": "HotspotY",
+            "params": {}
+          }
+        }
+      }
+    }
+  }
+}

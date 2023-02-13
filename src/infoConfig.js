@@ -1,0 +1,25 @@
+export const config = {
+  Set: {
+    IsResizable: true,
+    IsRotatable: true,
+    Is3D: false,
+    HasImage: false,
+    DefaultImageURL: null,
+    IsTiled: false,
+    IsDeprecated: false,
+    IsSingleGlobal: false,
+    SupportsZElevation: true,
+    SupportsColor: true,
+    SupportsEffects: true,
+    MustPreDraw: true,
+    CanBeBundled: true,
+  },
+  AddCommonACEs: {
+    Position: true,
+    SceneGraph: true,
+    Size: true,
+    Angle: true,
+    Appearance: true,
+    ZOrder: true,
+  },
+};
