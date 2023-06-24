@@ -1,6 +1,60 @@
 const SDK = self.SDK;
 
-//<-- PLUGIN_INFO -->
+const PLUGIN_INFO = {
+  "id": "skymen_Shell",
+  "version": "1.0.0.2",
+  "category": "general",
+  "author": "skymen",
+  "type": "world",
+  "addonType": "plugin",
+  "info": {
+    "Set": {
+      "IsResizable": true,
+      "IsRotatable": true,
+      "Is3D": false,
+      "HasImage": false,
+      "DefaultImageURL": null,
+      "IsTiled": false,
+      "IsDeprecated": false,
+      "IsSingleGlobal": false,
+      "SupportsZElevation": true,
+      "SupportsColor": true,
+      "SupportsEffects": true,
+      "MustPreDraw": true,
+      "CanBeBundled": true
+    },
+    "AddCommonACEs": {
+      "Position": true,
+      "SceneGraph": true,
+      "Size": true,
+      "Angle": true,
+      "Appearance": true,
+      "ZOrder": true
+    }
+  },
+  "properties": [
+    {
+      "type": "float",
+      "id": "hotspot-x",
+      "value": 0.5,
+      "options": {
+        "interpolatable": false
+      },
+      "name": "Origin X",
+      "desc": "X Coordinate (0-1)"
+    },
+    {
+      "type": "float",
+      "id": "hotspot-y",
+      "value": 0.5,
+      "options": {
+        "interpolatable": false
+      },
+      "name": "Origin Y",
+      "desc": "Y Coordinate (0-1)"
+    }
+  ]
+}
 
 let app = null;
 

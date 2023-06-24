@@ -58,16 +58,19 @@ function langFromConfig(config) {
   };
 
   let root;
-
+  let id = config.id.toLowerCase();
   if (config.addonType === "plugin") {
-    lang.text.plugins[config.name] = {};
-    root = lang.text.plugins[config.name];
+    lang.text.plugins = {};
+    lang.text.plugins[id] = {};
+    root = lang.text.plugins[id];
   } else if (config.addonType === "behavior") {
-    lang.text.behaviors[config.name] = {};
-    root = lang.text.behaviors[config.name];
+    lang.text.behaviors = {};
+    lang.text.behaviors[id] = {};
+    root = lang.text.behaviors[id];
   } else if (config.addonType === "effect") {
-    lang.text.effects[config.name] = {};
-    root = lang.text.effects[config.name];
+    lang.text.effects = {};
+    lang.text.effects[id] = {};
+    root = lang.text.effects[id];
   } else {
     throw new Error("Invalid addon type");
   }
@@ -110,8 +113,8 @@ function langFromConfig(config) {
       if (param.type === "combo") {
         root.actions[key].params[param.id].items = {};
         param.items.forEach((item) => {
-          const key = Object.keys(item)[0];
-          root.actions[key].params[param.id].items[key] = item[key];
+          const itemkey = Object.keys(item)[0];
+          root.actions[key].params[param.id].items[itemkey] = item[itemkey];
         });
       }
     });
@@ -135,8 +138,8 @@ function langFromConfig(config) {
       if (param.type === "combo") {
         root.conditions[key].params[param.id].items = {};
         param.items.forEach((item) => {
-          const key = Object.keys(item)[0];
-          root.conditions[key].params[param.id].items[key] = item[key];
+          const itemkey = Object.keys(item)[0];
+          root.conditions[key].params[param.id].items[itemkey] = item[itemkey];
         });
       }
     });
@@ -159,8 +162,8 @@ function langFromConfig(config) {
       if (param.type === "combo") {
         root.expressions[key].params[param.id].items = {};
         param.items.forEach((item) => {
-          const key = Object.keys(item)[0];
-          root.expressions[key].params[param.id].items[key] = item[key];
+          const itemkey = Object.keys(item)[0];
+          root.expressions[key].params[param.id].items[itemkey] = item[itemkey];
         });
       }
     });
@@ -175,12 +178,12 @@ function acesFromConfig(config) {
   Object.keys(config.aceCategories).forEach((category) => {
     aces[category] = {
       conditions: Object.keys(config.Cnds)
-        .filter((key) => config.Cnds[key].aceCategory === category)
+        .filter((key) => config.Cnds[key].category === category)
         .map((key) => {
           const ace = config.Cnds[key];
           const ret = {
             id: key,
-            sciptName: key,
+            scriptName: key,
           };
           Object.keys(ace).forEach((key) => {
             switch (key) {
@@ -219,13 +222,13 @@ function acesFromConfig(config) {
           }
           return ret;
         }),
-      actions: Object.keys(config.Cnds)
-        .filter((key) => config.Cnds[key].aceCategory === category)
+      actions: Object.keys(config.Acts)
+        .filter((key) => config.Acts[key].category === category)
         .map((key) => {
-          const ace = config.Cnds[key];
+          const ace = config.Acts[key];
           const ret = {
             id: key,
-            sciptName: key,
+            scriptName: key,
           };
           Object.keys(ace).forEach((key) => {
             switch (key) {
@@ -264,13 +267,13 @@ function acesFromConfig(config) {
           }
           return ret;
         }),
-      expressions: Object.keys(config.Cnds)
-        .filter((key) => config.Cnds[key].aceCategory === category)
+      expressions: Object.keys(config.Exps)
+        .filter((key) => config.Exps[key].category === category)
         .map((key) => {
-          const ace = config.Cnds[key];
+          const ace = config.Exps[key];
           const ret = {
             id: key,
-            sciptName: key,
+            scriptName: key,
             expressionName: key,
           };
           Object.keys(ace).forEach((key) => {
@@ -312,11 +315,16 @@ function acesFromConfig(config) {
         }),
     };
   });
+
+  return aces;
 }
 
-removeFilesRecursively("./export");
+if (fs.existsSync("./export")) {
+  removeFilesRecursively("./export");
+}
 
 // create lang and c3runtime folders
+fs.mkdirSync("./export");
 fs.mkdirSync("./export/lang");
 fs.mkdirSync("./export/c3runtime");
 
@@ -385,12 +393,12 @@ function getRuntimePluginInfoFromConfig(config) {
         return `"${key}": {
           ${
             config.Acts[key].hasOwnProperty("forward")
-              ? `"forward": "(inst) => inst.${config.Acts[key][key]}",`
+              ? `"forward": (inst) => inst.${config.Acts[key].forward},`
               : ""
           }
           ${
             config.Acts[key].hasOwnProperty("handler")
-              ? `"handler": ${config.Acts[key][key]},`
+              ? `"handler": ${config.Acts[key].handler},`
               : ""
           }
           ${
@@ -398,7 +406,7 @@ function getRuntimePluginInfoFromConfig(config) {
               ? `"autoScriptInterface": ${config.Acts[key].autoScriptInterface},`
               : ""
           }
-          `;
+          }`;
       })
       .join(",\n")}
   },
@@ -406,22 +414,22 @@ function getRuntimePluginInfoFromConfig(config) {
     ${Object.keys(config.Cnds)
       .map((key) => {
         return `"${key}": {
-        ${
-          config.Cnds[key].hasOwnProperty("forward")
-            ? `"forward": "(inst) => inst.${config.Cnds[key][key]}",`
-            : ""
-        }
-        ${
-          config.Cnds[key].hasOwnProperty("handler")
-            ? `"handler": ${config.Cnds[key][key]},`
-            : ""
-        }
-        ${
-          config.Cnds[key].hasOwnProperty("autoScriptInterface")
-            ? `"autoScriptInterface": ${config.Cnds[key].autoScriptInterface},`
-            : ""
-        }
-        `;
+          ${
+            config.Cnds[key].hasOwnProperty("forward")
+              ? `"forward": (inst) => inst.${config.Cnds[key].forward},`
+              : ""
+          }
+          ${
+            config.Cnds[key].hasOwnProperty("handler")
+              ? `"handler": ${config.Cnds[key].handler},`
+              : ""
+          }
+          ${
+            config.Cnds[key].hasOwnProperty("autoScriptInterface")
+              ? `"autoScriptInterface": ${config.Cnds[key].autoScriptInterface},`
+              : ""
+          }
+        }`;
       })
       .join(",\n")}
   },
@@ -429,22 +437,22 @@ function getRuntimePluginInfoFromConfig(config) {
     ${Object.keys(config.Exps)
       .map((key) => {
         return `"${key}": {
-        ${
-          config.Exps[key].hasOwnProperty("forward")
-            ? `"forward": "(inst) => inst.${config.Exps[key][key]}",`
-            : ""
-        }
-        ${
-          config.Exps[key].hasOwnProperty("handler")
-            ? `"handler": ${config.Exps[key][key]},`
-            : ""
-        }
-        ${
-          config.Exps[key].hasOwnProperty("autoScriptInterface")
-            ? `"autoScriptInterface": ${config.Exps[key].autoScriptInterface},`
-            : ""
-        }
-        `;
+          ${
+            config.Exps[key].hasOwnProperty("forward")
+              ? `"forward": (inst) => inst.${config.Exps[key].forward},`
+              : ""
+          }
+          ${
+            config.Exps[key].hasOwnProperty("handler")
+              ? `"handler": ${config.Exps[key].handler},`
+              : ""
+          }
+          ${
+            config.Exps[key].hasOwnProperty("autoScriptInterface")
+              ? `"autoScriptInterface": ${config.Exps[key].autoScriptInterface},`
+              : ""
+          }
+        }`;
       })
       .join(",\n")}
   },
@@ -453,9 +461,33 @@ function getRuntimePluginInfoFromConfig(config) {
 
 // write plugin.js and replace "//<-- PLUGIN_INFO -->" with the plugin info
 const plugin = fs.readFileSync("./src/plugin.js", "utf8");
+const instance = fs.readFileSync("./src/instance.js", "utf8");
+const scriptInterface = fs.readFileSync("./src/scriptInterface.js", "utf8");
 const pluginPluginInfo = getRuntimePluginInfoFromConfig(config);
-const pluginWithPluginInfo = plugin.replaceAll(
-  "//<-- PLUGIN_INFO -->",
-  pluginPluginInfo
-);
+const pluginWithPluginInfo = plugin
+  .replaceAll("//<-- PLUGIN_INFO -->", pluginPluginInfo)
+  .replaceAll("//<-- INSTANCE -->", instance)
+  .replaceAll("//<-- SCRIPT_INTERFACE -->", scriptInterface);
+
 fs.writeFileSync("./export/c3runtime/plugin.js", pluginWithPluginInfo);
+
+// zip the content of the export folder and name it with the plugin id and version and use .c3addon as extension
+var AdmZip = require("adm-zip");
+const zip = new AdmZip();
+zip.addLocalFolder("./export/c3runtime", "c3runtime");
+zip.addLocalFolder("./export/lang", "lang");
+
+// for each remaining file in the root export folder
+fs.readdirSync("./export").forEach((file) => {
+  // if the file is not the c3runtime or lang folder
+  if (file !== "c3runtime" && file !== "lang") {
+    // add it to the zip
+    zip.addLocalFile(`./export/${file}`, "");
+  }
+});
+
+// if dist folder does not exist, create it
+if (!fs.existsSync("./dist")) {
+  fs.mkdirSync("./dist");
+}
+zip.writeZip(`./dist/${config.id}-${config.version}.c3addon`);
