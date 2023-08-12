@@ -3,7 +3,7 @@ module.exports = {
   addonType: "plugin",
   id: "skymen_Shell",
   name: "Empty Shell",
-  version: "1.0.0.2",
+  version: "1.0.0.3",
   category: "general",
   author: "skymen",
   website: "https://www.construct.net",
@@ -24,7 +24,7 @@ module.exports = {
       SupportsZElevation: true,
       SupportsColor: true,
       SupportsEffects: true,
-      MustPreDraw: true,
+      MustPreDraw: false,
       CanBeBundled: true,
     },
     AddCommonACEs: {
@@ -57,9 +57,20 @@ module.exports = {
       name: "Origin Y",
       desc: "Y Coordinate (0-1)",
     },
+    {
+      type: "check",
+      id: "use-color-fill",
+      value: false,
+      options: {
+        interpolatable: false,
+      },
+      name: "Use Color Fill",
+      desc: "Wether to use the color as a solid fill or not",
+    },
   ],
   aceCategories: {
     general: "General",
+    appearance: "Appearance",
   },
   Acts: {
     SetSource: {
@@ -99,7 +110,6 @@ module.exports = {
         {
           id: "fallback",
           type: "combo",
-          items: ["item1", "item2", "item3", "item4"],
           name: "Fallback",
           desc: "If keeping sync, what to do if source is destroyed",
           items: [
@@ -142,6 +152,65 @@ module.exports = {
       displayText: "Set the origin to [i]{0}[/i], [i]{1}[/i]",
       description: "Set the origin",
     },
+    SetBlendMode: {
+      category: "appearance",
+      forward: "_SetBlendMode",
+      autoScriptInterface: false,
+      highlight: true,
+      params: [
+        {
+          id: "blend-mode",
+          type: "combo",
+          items: [
+            { normal: "Normal" },
+            { additive: "Additive" },
+            { xor: "Xor" },
+            { copy: "Copy" },
+            { "destination-over": "Destination over" },
+            { "source-in": "Source in" },
+            { "destination-in": "Destination in" },
+            { "source-out": "Source out" },
+            { "destination-out": "Destination out" },
+            { "source-atop": "Source atop" },
+            { "destination-atop": "Destination atop" },
+          ],
+          name: "Blend Mode",
+          desc: "The blend mode to use",
+        },
+      ],
+      listName: "Set Blend Mode",
+      displayText: "Set the blend mode to [i]{0}[/i]",
+      description: "Set the blend mode",
+    },
+    SetUseColor: {
+      category: "general",
+      forward: "_SetUseColor",
+      autoScriptInterface: false,
+      highlight: true,
+      params: [
+        {
+          id: "use-color-fill",
+          type: "boolean",
+          name: "Use Color Fill",
+          value: false,
+          desc: "Wether to use the color as a solid fill or not",
+        },
+      ],
+      listName: "Use Color Fill",
+      displayText: "Use Color Fill: [i]{0}[/i]",
+      description:
+        "Wether the addon uses the color to fill the object or not (will override sprite source use)",
+    },
+    Clear: {
+      category: "general",
+      forward: "_Clear",
+      autoScriptInterface: false,
+      highlight: true,
+      params: [],
+      listName: "Clear",
+      displayText: "Clear the object",
+      description: "Clear the object",
+    },
   },
   Cnds: {
     HasSource: {
@@ -167,6 +236,18 @@ module.exports = {
       listName: "Keeps sync",
       displayText: "Keeps sync",
       description: "Test if the object keeps sync with the source object",
+    },
+    UsesColorFill: {
+      category: "general",
+      handler: `function () {
+        return this.useColorFill;
+      }`,
+      autoScriptInterface: true,
+      highlight: false,
+      params: [],
+      listName: "Uses color fill",
+      displayText: "Uses color fill",
+      description: "Test if the object uses the color as a solid fill",
     },
   },
   Exps: {

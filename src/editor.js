@@ -63,12 +63,17 @@ P_C.Instance = class extends SDK.IWorldInstanceBase {
   Draw(iRenderer, iDrawParams) {
     // draw a box with line width 4
     iRenderer.SetColorFillMode();
-    iRenderer.PushLineWidth(4);
-    iRenderer.PushLineCap("square");
     iRenderer.SetColor(this._inst.GetColor());
-    iRenderer.LineQuad(this._inst.GetQuad());
-    iRenderer.PopLineWidth();
-    iRenderer.PopLineCap();
+    const useColorFill = this._inst.GetPropertyValue("use-color-fill");
+    if (useColorFill) {
+      iRenderer.Quad(this._inst.GetQuad());
+    } else {
+      iRenderer.PushLineWidth(4);
+      iRenderer.PushLineCap("square");
+      iRenderer.LineQuad(this._inst.GetQuad());
+      iRenderer.PopLineWidth();
+      iRenderer.PopLineCap();
+    }
   }
 
   IsOriginalSizeKnown() {

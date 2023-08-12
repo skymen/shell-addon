@@ -8,7 +8,8 @@
         "description": "An empty shell addon that can be given a texture",
         "help-url": "https://www.construct.net",
         "aceCategories": {
-          "general": "General"
+          "general": "General",
+          "appearance": "Appearance"
         },
         "properties": {
           "hotspot-x": {
@@ -18,6 +19,10 @@
           "hotspot-y": {
             "name": "Origin Y",
             "desc": "Y Coordinate (0-1)"
+          },
+          "use-color-fill": {
+            "name": "Use Color Fill",
+            "desc": "Wether to use the color as a solid fill or not"
           }
         },
         "actions": {
@@ -73,6 +78,47 @@
                 "desc": "The origin x coordinate (0-1)"
               }
             }
+          },
+          "SetBlendMode": {
+            "list-name": "Set Blend Mode",
+            "display-text": "Set the blend mode to [i]{0}[/i]",
+            "description": "Set the blend mode",
+            "params": {
+              "blend-mode": {
+                "name": "Blend Mode",
+                "desc": "The blend mode to use",
+                "items": {
+                  "normal": "Normal",
+                  "additive": "Additive",
+                  "xor": "Xor",
+                  "copy": "Copy",
+                  "destination-over": "Destination over",
+                  "source-in": "Source in",
+                  "destination-in": "Destination in",
+                  "source-out": "Source out",
+                  "destination-out": "Destination out",
+                  "source-atop": "Source atop",
+                  "destination-atop": "Destination atop"
+                }
+              }
+            }
+          },
+          "SetUseColor": {
+            "list-name": "Use Color Fill",
+            "display-text": "Use Color Fill: [i]{0}[/i]",
+            "description": "Wether the addon uses the color to fill the object or not (will override sprite source use)",
+            "params": {
+              "use-color-fill": {
+                "name": "Use Color Fill",
+                "desc": "Wether to use the color as a solid fill or not"
+              }
+            }
+          },
+          "Clear": {
+            "list-name": "Clear",
+            "display-text": "Clear the object",
+            "description": "Clear the object",
+            "params": {}
           }
         },
         "conditions": {
@@ -86,6 +132,12 @@
             "list-name": "Keeps sync",
             "display-text": "Keeps sync",
             "description": "Test if the object keeps sync with the source object",
+            "params": {}
+          },
+          "UsesColorFill": {
+            "list-name": "Uses color fill",
+            "display-text": "Uses color fill",
+            "description": "Test if the object uses the color as a solid fill",
             "params": {}
           }
         },

@@ -12,6 +12,21 @@ const PLUGIN_INFO = {
           "forward": (inst) => inst._SetOrigin,
           
           "autoScriptInterface": true,
+          },
+"SetBlendMode": {
+          "forward": (inst) => inst._SetBlendMode,
+          
+          "autoScriptInterface": false,
+          },
+"SetUseColor": {
+          "forward": (inst) => inst._SetUseColor,
+          
+          "autoScriptInterface": false,
+          },
+"Clear": {
+          "forward": (inst) => inst._Clear,
+          
+          "autoScriptInterface": false,
           }
   },
   Cnds: {
@@ -26,6 +41,13 @@ const PLUGIN_INFO = {
           
           "handler": function () {
         return !!(this.source || this.sourceTex) && this.keepSync;
+      },
+          "autoScriptInterface": true,
+        },
+"UsesColorFill": {
+          
+          "handler": function () {
+        return this.useColorFill;
       },
           "autoScriptInterface": true,
         }
@@ -175,10 +197,12 @@ function getInstanceJs() {
 
       this.hotspotX = 0.5;
       this.hotspotY = 0.5;
+      this.useColorFill = false;
 
       if (properties) {
         this.hotspotX = properties[0];
         this.hotspotY = properties[1];
+        this.useColorFill = properties[2];
       }
 
       this.source = null;
@@ -335,6 +359,23 @@ function getInstanceJs() {
     }
 
     Draw(renderer) {
+      if (this.useColorFill) {
+        renderer.SetColorFillMode();
+        const wi = this.GetWorldInfo();
+        const quad = wi.GetBoundingQuad();
+        renderer.SetColor(wi._color);
+        if (this._runtime.IsPixelRoundingEnabled()) {
+          const ox = Math.round(wi.GetX()) - wi.GetX();
+          const oy = Math.round(wi.GetY()) - wi.GetY();
+          tempQuad.copy(quad);
+          tempQuad.offset(ox, oy);
+          renderer.Quad(tempQuad);
+        } else {
+          renderer.Quad(quad);
+        }
+        return;
+      }
+
       const texture =
         this.sourceTex || (this.source && this.source.GetTexture());
 
@@ -371,6 +412,21 @@ function getInstanceJs() {
 
     GetScriptInterfaceClass() {
       return scriptInterface;
+    }
+
+    _SetUseColor(fill) {
+      this.useColorFill = fill;
+      if (fill && this.source) this.source = null;
+    }
+
+    _Clear() {
+      this.useColorFill = false;
+      this.source = null;
+    }
+
+    _SetBlendMode(bm) {
+      this.GetWorldInfo().SetBlendMode(bm);
+      this._runtime.UpdateRender();
     }
   };
 }

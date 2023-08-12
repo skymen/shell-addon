@@ -2,7 +2,7 @@ const SDK = self.SDK;
 
 const PLUGIN_INFO = {
   "id": "skymen_Shell",
-  "version": "1.0.0.2",
+  "version": "1.0.0.3",
   "category": "general",
   "author": "skymen",
   "type": "world",
@@ -20,7 +20,7 @@ const PLUGIN_INFO = {
       "SupportsZElevation": true,
       "SupportsColor": true,
       "SupportsEffects": true,
-      "MustPreDraw": true,
+      "MustPreDraw": false,
       "CanBeBundled": true
     },
     "AddCommonACEs": {
@@ -52,6 +52,16 @@ const PLUGIN_INFO = {
       },
       "name": "Origin Y",
       "desc": "Y Coordinate (0-1)"
+    },
+    {
+      "type": "check",
+      "id": "use-color-fill",
+      "value": false,
+      "options": {
+        "interpolatable": false
+      },
+      "name": "Use Color Fill",
+      "desc": "Wether to use the color as a solid fill or not"
     }
   ]
 }
@@ -117,12 +127,17 @@ P_C.Instance = class extends SDK.IWorldInstanceBase {
   Draw(iRenderer, iDrawParams) {
     // draw a box with line width 4
     iRenderer.SetColorFillMode();
-    iRenderer.PushLineWidth(4);
-    iRenderer.PushLineCap("square");
     iRenderer.SetColor(this._inst.GetColor());
-    iRenderer.LineQuad(this._inst.GetQuad());
-    iRenderer.PopLineWidth();
-    iRenderer.PopLineCap();
+    const useColorFill = this._inst.GetPropertyValue("use-color-fill");
+    if (useColorFill) {
+      iRenderer.Quad(this._inst.GetQuad());
+    } else {
+      iRenderer.PushLineWidth(4);
+      iRenderer.PushLineCap("square");
+      iRenderer.LineQuad(this._inst.GetQuad());
+      iRenderer.PopLineWidth();
+      iRenderer.PopLineCap();
+    }
   }
 
   IsOriginalSizeKnown() {
