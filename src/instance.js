@@ -20,7 +20,7 @@ function getInstanceJs() {
       this.syncSize = 0;
       this.fallback = 3;
       this.syncOrigin = false;
-      this.rcTex = C3.New(C3.Rect);
+      this.rcQuad = C3.New(C3.Quad);
 
       this._SetOrigin(this.hotspotX, this.hotspotY);
     }
@@ -60,7 +60,7 @@ function getInstanceJs() {
         this._StartTicking();
       } else {
         this.sourceTex = sdkInst.GetTexture();
-        this.rcTex.copy(sdkInst.GetTexRect());
+        this.rcQuad.copy(sdkInst.GetTexQuad());
         this._StopTicking();
       }
 
@@ -191,21 +191,15 @@ function getInstanceJs() {
 
       const wi = this.GetWorldInfo();
       const quad = wi.GetBoundingQuad();
-      const rcTex = this.source
-        ? this.source.GetCurrentImageInfo().GetTexRect()
-        : this.rcTex;
+      const rcQuad = this.source
+        ? this.source.GetCurrentImageInfo().GetTexQuad()
+        : this.rcQuad;
 
       renderer.SetTexture(texture);
 
-      if (this._runtime.IsPixelRoundingEnabled()) {
-        const ox = Math.round(wi.GetX()) - wi.GetX();
-        const oy = Math.round(wi.GetY()) - wi.GetY();
-        tempQuad.copy(quad);
-        tempQuad.offset(ox, oy);
-        renderer.Quad3(tempQuad, rcTex);
-      } else {
-        renderer.Quad3(quad, rcTex);
-      }
+      if (this._runtime.IsPixelRoundingEnabled())
+        quad = wi.PixelRoundQuad(quad);
+      renderer.Quad4(quad, rcQuad);
     }
 
     SaveToJson() {
