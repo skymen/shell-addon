@@ -3,7 +3,7 @@ module.exports = {
   addonType: "plugin",
   id: "skymen_Shell",
   name: "Empty Shell",
-  version: "1.0.0.4",
+  version: "1.0.0.5",
   category: "general",
   author: "skymen",
   website: "https://www.construct.net",

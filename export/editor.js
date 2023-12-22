@@ -2,7 +2,7 @@ const SDK = self.SDK;
 
 const PLUGIN_INFO = {
   "id": "skymen_Shell",
-  "version": "1.0.0.4",
+  "version": "1.0.0.5",
   "category": "general",
   "author": "skymen",
   "type": "world",

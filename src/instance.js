@@ -21,6 +21,8 @@ function getInstanceJs() {
       this.fallback = 3;
       this.syncOrigin = false;
       this.rcQuad = C3.New(C3.Quad);
+      this.firstTick = this.useColorFill;
+      if (this.firstTick) this._StartTicking();
 
       this._SetOrigin(this.hotspotX, this.hotspotY);
     }
@@ -114,6 +116,10 @@ function getInstanceJs() {
     }
 
     Tick() {
+      if (this.firstTick) {
+        this.firstTick = false;
+        this._UpdateRendererStateGroup();
+      }
       if (this.source === null) {
         this._StopTicking();
         return;
@@ -216,9 +222,26 @@ function getInstanceJs() {
       return scriptInterface;
     }
 
+    _UpdateRendererStateGroup() {
+      const renderer = this._runtime.GetRenderer();
+      const wi = this.GetWorldInfo();
+      if (wi._stateGroup) renderer.ReleaseStateGroup(wi._stateGroup);
+      let shaderProgram;
+      if (this.useColorFill) shaderProgram = renderer._spColorFill || "<fill>";
+      else
+        shaderProgram = renderer.GetTextureFillShaderProgram() || "<default>";
+      wi._stateGroup = renderer.AcquireStateGroup(
+        shaderProgram,
+        wi.GetBlendMode(),
+        wi._colorPremultiplied,
+        wi.GetZElevation()
+      );
+    }
+
     _SetUseColor(fill) {
       this.useColorFill = fill;
       if (fill && this.source) this.source = null;
+      this._UpdateRendererStateGroup();
     }
 
     _Clear() {
