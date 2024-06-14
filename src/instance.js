@@ -22,6 +22,7 @@ function getInstanceJs() {
       this.syncOrigin = false;
       this.rcQuad = C3.New(C3.Quad);
       this.firstTick = this.useColorFill;
+      this.tempColor = C3.New(C3.Color);
       if (this.firstTick) this._StartTicking();
 
       this._SetOrigin(this.hotspotX, this.hotspotY);
@@ -177,7 +178,9 @@ function getInstanceJs() {
         renderer.SetColorFillMode();
         const wi = this.GetWorldInfo();
         const quad = wi.GetBoundingQuad();
-        renderer.SetColor(wi._color);
+        this.tempColor.copy(wi._color);
+        this.tempColor.premultiply();
+        renderer.SetColor(this.tempColor);
         if (this._runtime.IsPixelRoundingEnabled()) {
           const ox = Math.round(wi.GetX()) - wi.GetX();
           const oy = Math.round(wi.GetY()) - wi.GetY();
