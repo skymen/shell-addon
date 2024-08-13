@@ -199,7 +199,7 @@ function getInstanceJs() {
       if (!texture) return; // dynamic texture load which hasn't completed yet; can't draw anything
 
       const wi = this.GetWorldInfo();
-      const quad = wi.GetBoundingQuad();
+      let quad = wi.GetBoundingQuad();
       const rcQuad = this.source
         ? this.source.GetCurrentImageInfo().GetTexQuad()
         : this.rcQuad;
